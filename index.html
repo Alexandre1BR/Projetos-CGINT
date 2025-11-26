@@ -3,25 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Projetos CGINT - Ferramentas e Visualizações</title>
+    <title>CGINT - Ferramentas e Sistemas</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-
-        :root {
-            --primary: #1e3a5f;
-            --primary-light: #2d5a87;
-            --accent: #2563eb;
-            --success: #059669;
-            --surface: #ffffff;
-            --surface-alt: #f8fafc;
-            --border: #e2e8f0;
-            --text: #1e293b;
-            --text-muted: #64748b;
-            --shadow: 0 1px 3px rgba(0,0,0,0.1);
-            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1);
-            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1);
-            --radius: 8px;
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
 
         * {
             margin: 0;
@@ -30,285 +14,565 @@
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: var(--text);
+            font-family: 'Roboto', Arial, sans-serif;
+            background: #f5f5f5;
+            color: #333;
             line-height: 1.6;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
         }
 
-        .container {
+        /* Top Bar Governamental */
+        .gov-bar {
+            background: #071d41;
+            color: white;
+            padding: 0.5rem 0;
+            font-size: 0.75rem;
+            border-bottom: 3px solid #00820c;
+        }
+
+        .gov-bar .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 2rem;
+            padding: 0 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .gov-links a {
+            color: white;
+            text-decoration: none;
+            margin-left: 1rem;
+            opacity: 0.9;
+        }
+
+        .gov-links a:hover {
+            opacity: 1;
+            text-decoration: underline;
+        }
+
+        /* Header Institucional */
+        header {
+            background: white;
+            border-bottom: 1px solid #ddd;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .header-main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1.5rem 1.5rem 1rem;
+        }
+
+        .header-logos {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .logo-container img {
+            height: 70px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .divider {
+            width: 1px;
+            height: 60px;
+            background: #ddd;
+        }
+
+        .header-title {
             flex: 1;
         }
 
-        /* Header */
-        header {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 2rem 0;
-            margin-bottom: 3rem;
-        }
-
-        .header-content {
-            text-align: center;
-            color: white;
-        }
-
-        h1 {
-            font-size: 2.5rem;
+        .header-title h1 {
+            color: #071d41;
+            font-size: 1.8rem;
             font-weight: 700;
-            margin-bottom: 0.5rem;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 0.25rem;
+            letter-spacing: -0.5px;
         }
 
-        .subtitle {
-            font-size: 1.1rem;
-            opacity: 0.9;
+        .header-subtitle {
+            color: #666;
+            font-size: 0.9rem;
             font-weight: 400;
         }
 
-        /* Main Content */
-        main {
-            flex: 1;
+        /* Breadcrumb Institucional */
+        .breadcrumb {
+            background: #f8f9fa;
+            border-bottom: 1px solid #e5e5e5;
+            padding: 0.75rem 0;
         }
 
-        .intro {
+        .breadcrumb .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        .breadcrumb-items {
+            display: flex;
+            align-items: center;
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        .breadcrumb-items span {
+            margin: 0 0.5rem;
+            color: #999;
+        }
+
+        .breadcrumb-items a {
+            color: #1351b4;
+            text-decoration: none;
+        }
+
+        .breadcrumb-items a:hover {
+            text-decoration: underline;
+        }
+
+        /* Container Principal */
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2.5rem 1.5rem;
+        }
+
+        /* Info Box */
+        .info-section {
             background: white;
-            border-radius: var(--radius);
-            padding: 2rem;
+            border-left: 4px solid #1351b4;
+            padding: 1.5rem;
             margin-bottom: 2rem;
-            box-shadow: var(--shadow-lg);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
         }
 
-        .intro h2 {
-            color: var(--primary);
-            margin-bottom: 1rem;
+        .info-section h2 {
+            color: #071d41;
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+
+        .info-section p {
+            color: #555;
+            line-height: 1.7;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Projects Grid */
+        .projects-title {
+            color: #071d41;
             font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid #1351b4;
         }
 
-        .intro p {
-            color: var(--text-muted);
-            line-height: 1.8;
-        }
-
-        /* Project Grid */
         .projects-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 2rem;
-            margin-top: 2rem;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
         }
 
         /* Project Card */
         .project-card {
             background: white;
-            border-radius: var(--radius);
-            padding: 2rem;
-            box-shadow: var(--shadow-lg);
+            border: 1px solid #e5e5e5;
+            border-radius: 4px;
+            overflow: hidden;
             transition: all 0.3s ease;
-            border: 2px solid transparent;
-            display: flex;
-            flex-direction: column;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
 
         .project-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
-            border-color: var(--accent);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+            border-color: #1351b4;
+            transform: translateY(-2px);
+        }
+
+        .project-header {
+            background: linear-gradient(135deg, #071d41 0%, #1351b4 100%);
+            color: white;
+            padding: 1.25rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
         }
 
         .project-icon {
-            width: 60px;
-            height: 60px;
-            border-radius: 12px;
+            font-size: 2rem;
+            width: 50px;
+            height: 50px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 4px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2rem;
-            margin-bottom: 1.5rem;
         }
 
-        .project-icon.calculator {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-
-        .project-icon.diagram {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-        }
-
-        .project-title {
-            font-size: 1.4rem;
+        .project-header-text h3 {
+            font-size: 1.2rem;
             font-weight: 600;
-            color: var(--primary);
-            margin-bottom: 0.75rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .project-header-text .system-id {
+            font-size: 0.75rem;
+            opacity: 0.85;
+            font-family: 'Courier New', monospace;
+            letter-spacing: 0.5px;
+        }
+
+        .project-body {
+            padding: 1.5rem;
         }
 
         .project-description {
-            color: var(--text-muted);
-            margin-bottom: 1.5rem;
-            flex: 1;
+            color: #555;
+            margin-bottom: 1.25rem;
             line-height: 1.6;
+            font-size: 0.95rem;
         }
 
         .project-tags {
             display: flex;
             flex-wrap: wrap;
             gap: 0.5rem;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.25rem;
         }
 
         .tag {
-            background: var(--surface-alt);
-            color: var(--text-muted);
-            padding: 0.25rem 0.75rem;
-            border-radius: 12px;
+            background: #f0f0f0;
+            color: #666;
+            padding: 0.35rem 0.75rem;
+            border-radius: 3px;
             font-size: 0.75rem;
             font-weight: 500;
             text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .tag.priority {
+            background: #d4edda;
+            color: #155724;
         }
 
         .project-link {
             display: inline-flex;
             align-items: center;
-            justify-content: center;
             gap: 0.5rem;
-            padding: 0.875rem 1.5rem;
-            background: var(--primary);
+            padding: 0.75rem 1.5rem;
+            background: #1351b4;
             color: white;
             text-decoration: none;
-            border-radius: var(--radius);
-            font-weight: 600;
+            border-radius: 3px;
+            font-weight: 500;
+            font-size: 0.9rem;
             transition: all 0.2s;
-            text-align: center;
         }
 
         .project-link:hover {
-            background: var(--primary-light);
-            transform: scale(1.02);
+            background: #071d41;
         }
 
-        .arrow {
+        .project-link::after {
+            content: '→';
+            font-size: 1.1rem;
             transition: transform 0.2s;
         }
 
-        .project-link:hover .arrow {
+        .project-link:hover::after {
             transform: translateX(3px);
         }
 
-        /* Footer */
+        /* Footer Institucional */
         footer {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            background: #071d41;
             color: white;
-            text-align: center;
-            padding: 2rem;
             margin-top: 3rem;
+            border-top: 3px solid #00820c;
         }
 
-        footer p {
-            opacity: 0.9;
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+
+        .footer-sections {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .footer-section h4 {
             font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
-        .footer-brand {
-            font-weight: 600;
-            margin-bottom: 0.5rem;
+        .footer-section p,
+        .footer-section a {
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.8);
+            line-height: 1.8;
+            text-decoration: none;
+            display: block;
+        }
+
+        .footer-section a:hover {
+            color: #fff;
+            text-decoration: underline;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 1.5rem;
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.6);
+        }
+
+        .institutional-hierarchy {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            font-size: 0.85rem;
+        }
+
+        .institutional-hierarchy span {
+            color: rgba(255,255,255,0.8);
+        }
+
+        .institutional-hierarchy .separator {
+            color: rgba(255,255,255,0.4);
         }
 
         /* Responsive */
         @media (max-width: 768px) {
-            h1 {
-                font-size: 2rem;
+            .header-logos {
+                flex-direction: column;
+                align-items: flex-start;
             }
 
-            .subtitle {
-                font-size: 1rem;
+            .logo-container {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .logo-container img {
+                height: 50px;
+            }
+
+            .divider {
+                display: none;
+            }
+
+            .header-title h1 {
+                font-size: 1.4rem;
             }
 
             .projects-grid {
                 grid-template-columns: 1fr;
             }
 
-            .container {
-                padding: 1rem;
+            .gov-bar .container {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+
+            .gov-links {
+                display: flex;
+                flex-direction: column;
+                gap: 0.25rem;
+            }
+
+            .gov-links a {
+                margin-left: 0;
             }
         }
     </style>
 </head>
 <body>
-    <header>
+    <!-- Barra Superior Governamental -->
+    <div class="gov-bar">
         <div class="container">
-            <div class="header-content">
-                <h1>Projetos CGINT</h1>
-                <p class="subtitle">Ferramentas e Visualizações para Análise e Gestão</p>
+            <div>Ministério da Justiça e Segurança Pública</div>
+            <div class="gov-links">
+                <a href="https://www.gov.br/mj/pt-br">Portal MJSP</a>
+                <a href="https://www.gov.br/mj/pt-br/assuntos/sua-seguranca/seguranca-publica/senasp">SENASP</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header Institucional -->
+    <header>
+        <div class="header-main">
+            <div class="header-logos">
+                <div class="logo-container">
+                    <img src="assets/images/logo-republica.png" alt="República Federativa do Brasil">
+                    <div class="divider"></div>
+                    <img src="assets/images/logo-cgint.png" alt="CGINT">
+                </div>
+                <div class="header-title">
+                    <h1>Coordenação-Geral de Inteligência</h1>
+                    <p class="header-subtitle">CGINT/DIOPI/SENASP - Sistemas e Ferramentas de Análise</p>
+                </div>
             </div>
         </div>
     </header>
 
-    <main class="container">
-        <div class="intro">
-            <h2>Bem-vindo</h2>
-            <p>
-                Esta é uma coleção de ferramentas e visualizações desenvolvidas para auxiliar em análises financeiras
-                e gestão de governança de APIs. Explore os projetos abaixo para acessar calculadoras interativas
-                e diagramas técnicos.
-            </p>
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+        <div class="container">
+            <div class="breadcrumb-items">
+                <a href="https://www.gov.br">Gov.br</a>
+                <span>›</span>
+                <a href="https://www.gov.br/mj/pt-br">MJSP</a>
+                <span>›</span>
+                <a href="https://www.gov.br/mj/pt-br/assuntos/sua-seguranca/seguranca-publica/senasp">SENASP</a>
+                <span>›</span>
+                <span>CGINT - Sistemas</span>
+            </div>
         </div>
+    </div>
+
+    <!-- Conteúdo Principal -->
+    <main class="main-container">
+        <!-- Informações Institucionais -->
+        <section class="info-section">
+            <h2>Portal de Sistemas e Ferramentas</h2>
+            <p>
+                Este portal disponibiliza ferramentas e sistemas desenvolvidos pela Coordenação-Geral de Inteligência (CGINT)
+                para apoio à análise de dados, gestão de informações estratégicas e visualização de processos institucionais.
+            </p>
+            <p>
+                <strong>Importante:</strong> Os sistemas apresentados são ferramentas de apoio técnico e educacional.
+                Para uso operacional, consulte os canais oficiais da DIOPI/SENASP.
+            </p>
+        </section>
+
+        <!-- Grid de Projetos -->
+        <h2 class="projects-title">Sistemas Disponíveis</h2>
 
         <div class="projects-grid">
-            <!-- Projeto 1: Calculadora de Renda Fixa -->
+            <!-- Sistema 1: Calculadora -->
             <div class="project-card">
-                <div class="project-icon calculator">📊</div>
-                <h3 class="project-title">Calculadora de Renda Fixa</h3>
-                <p class="project-description">
-                    Ferramenta completa para comparação de investimentos em renda fixa, incluindo CDB, LCI/LCA,
-                    Tesouro SELIC e IPCA+. Simula cenários de curto, médio e longo prazo com reinvestimento automático,
-                    come-cotas e cupons semestrais.
-                </p>
-                <div class="project-tags">
-                    <span class="tag">Finanças</span>
-                    <span class="tag">Investimentos</span>
-                    <span class="tag">Calculadora</span>
+                <div class="project-header">
+                    <div class="project-icon">📊</div>
+                    <div class="project-header-text">
+                        <h3>Calculadora de Renda Fixa</h3>
+                        <span class="system-id">SYS-FIN-001</span>
+                    </div>
                 </div>
-                <a href="projetos/calculadora-renda-fixa.html" class="project-link">
-                    Acessar Calculadora
-                    <span class="arrow">→</span>
-                </a>
+                <div class="project-body">
+                    <p class="project-description">
+                        Sistema de análise comparativa para investimentos em renda fixa, incluindo CDB, LCI/LCA,
+                        Tesouro SELIC e IPCA+. Permite simulação de cenários de curto, médio e longo prazo com
+                        cálculo automático de reinvestimento, come-cotas e cupons semestrais.
+                    </p>
+                    <div class="project-tags">
+                        <span class="tag">Análise Financeira</span>
+                        <span class="tag">Investimentos</span>
+                        <span class="tag priority">Calculadora</span>
+                    </div>
+                    <a href="projetos/calculadora-renda-fixa.html" class="project-link">
+                        Acessar Sistema
+                    </a>
+                </div>
             </div>
 
-            <!-- Projeto 2: Diagrama de Gestão de APIs -->
+            <!-- Sistema 2: Diagrama -->
             <div class="project-card">
-                <div class="project-icon diagram">🔐</div>
-                <h3 class="project-title">Diagrama de Governança de APIs</h3>
-                <p class="project-description">
-                    Visualização interativa comparando cenários de governança de APIs no contexto do ACT SSP/SC ↔ MJSP.
-                    Demonstra o impacto da centralização versus descentralização de chaves de API em situações de
-                    incidente de segurança.
-                </p>
-                <div class="project-tags">
-                    <span class="tag">Governança</span>
-                    <span class="tag">APIs</span>
-                    <span class="tag">Segurança</span>
-                    <span class="tag">Visualização</span>
+                <div class="project-header">
+                    <div class="project-icon">🔐</div>
+                    <div class="project-header-text">
+                        <h3>Diagrama de Governança de APIs</h3>
+                        <span class="system-id">SYS-GOV-002</span>
+                    </div>
                 </div>
-                <a href="projetos/governanca-apis.html" class="project-link">
-                    Acessar Diagrama
-                    <span class="arrow">→</span>
-                </a>
+                <div class="project-body">
+                    <p class="project-description">
+                        Visualização interativa de cenários de governança de APIs no contexto do Acordo de Cooperação
+                        Técnica (ACT) SSP/SC ↔ MJSP. Demonstra impactos operacionais de diferentes arquiteturas de
+                        segurança e controle de acesso à Plataforma Córtex.
+                    </p>
+                    <div class="project-tags">
+                        <span class="tag">Governança</span>
+                        <span class="tag">Segurança</span>
+                        <span class="tag">APIs</span>
+                        <span class="tag priority">Interativo</span>
+                    </div>
+                    <a href="projetos/governanca-apis.html" class="project-link">
+                        Acessar Sistema
+                    </a>
+                </div>
             </div>
         </div>
     </main>
 
+    <!-- Footer Institucional -->
     <footer>
-        <p class="footer-brand">Projetos CGINT</p>
-        <p>Ferramentas desenvolvidas para fins educacionais e análise técnica</p>
+        <div class="footer-content">
+            <div class="footer-sections">
+                <div class="footer-section">
+                    <h4>Sobre a CGINT</h4>
+                    <p>
+                        Coordenação-Geral de Inteligência, vinculada à Diretoria de Operações Integradas e de Inteligência (DIOPI)
+                        da Secretaria Nacional de Segurança Pública (SENASP).
+                    </p>
+                </div>
+                <div class="footer-section">
+                    <h4>Contato Institucional</h4>
+                    <p>SENASP - Secretaria Nacional de Segurança Pública</p>
+                    <p>Ministério da Justiça e Segurança Pública</p>
+                    <p>Esplanada dos Ministérios, Bloco T - Brasília/DF</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Links Úteis</h4>
+                    <a href="https://www.gov.br/mj/pt-br">Portal MJSP</a>
+                    <a href="https://www.gov.br/mj/pt-br/assuntos/sua-seguranca/seguranca-publica/senasp">SENASP</a>
+                    <a href="https://www.gov.br">Portal Gov.br</a>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <div class="institutional-hierarchy">
+                    <span>CSIOPI</span>
+                    <span class="separator">•</span>
+                    <span>CGINT</span>
+                    <span class="separator">•</span>
+                    <span>DIOPI</span>
+                    <span class="separator">•</span>
+                    <span>SENASP</span>
+                    <span class="separator">•</span>
+                    <span>MJSP</span>
+                </div>
+                <p>Sistemas desenvolvidos para fins técnicos e educacionais</p>
+                <p>&copy; 2025 Ministério da Justiça e Segurança Pública - Todos os direitos reservados</p>
+            </div>
+        </div>
     </footer>
 </body>
 </html>
