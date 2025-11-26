@@ -9,7 +9,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
 
     <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
 
     <!-- React & ReactDOM (Development versions for standalone usage) -->
     <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
@@ -20,7 +20,7 @@
 
     <style>
       body {
-        font-family: 'Inter', sans-serif;
+        font-family: 'Roboto', Arial, sans-serif;
         background-color: #f5f5f5;
       }
       .animate-flow {
@@ -84,6 +84,27 @@
       .header-subtitle-gov {
         color: #666;
         font-size: 0.8rem;
+      }
+      /* Responsive */
+      @media (max-width: 768px) {
+        .header-content {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+        .logo-container-gov {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 0.75rem;
+        }
+        .logo-container-gov img {
+          height: 40px;
+        }
+        .divider-gov {
+          display: none;
+        }
+        .header-title-gov h1 {
+          font-size: 1.1rem;
+        }
       }
     </style>
 <script type="importmap">
@@ -568,6 +589,16 @@
                     </div>
                     </div>
                 </header>
+
+                {/* Aviso de Disclaimer */}
+                <div style={{background: '#fff3cd', borderBottom: '1px solid #ffc107', padding: '0.75rem 0'}}>
+                    <div className="container mx-auto px-4">
+                        <p style={{fontSize: '0.75rem', color: '#856404', textAlign: 'center', margin: 0}}>
+                            <strong>⚠️ AMBIENTE DE TESTES:</strong> Este sistema é uma demonstração técnica para fins educacionais.
+                            Não possui relação oficial com CGINT/DIOPI/SENASP/MJSP. Desenvolvido para testes de HTML, JavaScript e visualização de dados.
+                        </p>
+                    </div>
+                </div>
 
                 {/* Main Content */}
                 <main className="flex-1 container mx-auto px-4 py-8">
