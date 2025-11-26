@@ -4,7 +4,7 @@ Coleção de ferramentas e visualizações para análise e gestão.
 
 ## 🚀 Acesso
 
-Acesse o site: [https://SEU-USUARIO.github.io/Projetos-CGINT](https://SEU-USUARIO.github.io/Projetos-CGINT)
+Acesse o site: [https://Alexandre1BR.github.io/Projetos-CGINT](https://SEU-USUARIO.github.io/Projetos-CGINT)
 
 ## 📂 Projetos Incluídos
 
@@ -73,9 +73,15 @@ Aguarde alguns minutos e seu site estará disponível em:
 ```
 Projetos CGINT/
 ├── index.html                      # Página inicial
-├── calculadora-renda-fixa-v4.html  # Calculadora de investimentos
-├── diagrama-gestao-apis.html       # Diagrama de governança
-└── README.md                       # Este arquivo
+├── README.md                       # Este arquivo
+├── .gitignore                      # Arquivos ignorados pelo Git
+├── assets/                         # Recursos estáticos
+│   └── images/                     # Imagens e logos
+│       ├── logo-cgint.png          # Logo CGINT
+│       └── logo-republica.png      # Logo República
+└── projetos/                       # Projetos individuais
+    ├── calculadora-renda-fixa.html # Calculadora de investimentos
+    └── governanca-apis.html        # Diagrama de governança de APIs
 ```
 
 ## 🎯 Uso Local
