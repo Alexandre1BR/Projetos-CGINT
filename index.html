@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projetos CGINT - Ferramentas e Visualizações</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+        :root {
+            --primary: #1e3a5f;
+            --primary-light: #2d5a87;
+            --accent: #2563eb;
+            --success: #059669;
+            --surface: #ffffff;
+            --surface-alt: #f8fafc;
+            --border: #e2e8f0;
+            --text: #1e293b;
+            --text-muted: #64748b;
+            --shadow: 0 1px 3px rgba(0,0,0,0.1);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1);
+            --radius: 8px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            flex: 1;
+        }
+
+        /* Header */
+        header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 2rem 0;
+            margin-bottom: 3rem;
+        }
+
+        .header-content {
+            text-align: center;
+            color: white;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            font-weight: 400;
+        }
+
+        /* Main Content */
+        main {
+            flex: 1;
+        }
+
+        .intro {
+            background: white;
+            border-radius: var(--radius);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .intro h2 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .intro p {
+            color: var(--text-muted);
+            line-height: 1.8;
+        }
+
+        /* Project Grid */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        /* Project Card */
+        .project-card {
+            background: white;
+            border-radius: var(--radius);
+            padding: 2rem;
+            box-shadow: var(--shadow-lg);
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .project-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
+            border-color: var(--accent);
+        }
+
+        .project-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .project-icon.calculator {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .project-icon.diagram {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .project-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 0.75rem;
+        }
+
+        .project-description {
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+            flex: 1;
+            line-height: 1.6;
+        }
+
+        .project-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .tag {
+            background: var(--surface-alt);
+            color: var(--text-muted);
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        .project-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.875rem 1.5rem;
+            background: var(--primary);
+            color: white;
+            text-decoration: none;
+            border-radius: var(--radius);
+            font-weight: 600;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .project-link:hover {
+            background: var(--primary-light);
+            transform: scale(1.02);
+        }
+
+        .arrow {
+            transition: transform 0.2s;
+        }
+
+        .project-link:hover .arrow {
+            transform: translateX(3px);
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 3rem;
+        }
+
+        footer p {
+            opacity: 0.9;
+            font-size: 0.9rem;
+        }
+
+        .footer-brand {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .subtitle {
+                font-size: 1rem;
+            }
+
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <h1>Projetos CGINT</h1>
+                <p class="subtitle">Ferramentas e Visualizações para Análise e Gestão</p>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="intro">
+            <h2>Bem-vindo</h2>
+            <p>
+                Esta é uma coleção de ferramentas e visualizações desenvolvidas para auxiliar em análises financeiras
+                e gestão de governança de APIs. Explore os projetos abaixo para acessar calculadoras interativas
+                e diagramas técnicos.
+            </p>
+        </div>
+
+        <div class="projects-grid">
+            <!-- Projeto 1: Calculadora de Renda Fixa -->
+            <div class="project-card">
+                <div class="project-icon calculator">📊</div>
+                <h3 class="project-title">Calculadora de Renda Fixa</h3>
+                <p class="project-description">
+                    Ferramenta completa para comparação de investimentos em renda fixa, incluindo CDB, LCI/LCA,
+                    Tesouro SELIC e IPCA+. Simula cenários de curto, médio e longo prazo com reinvestimento automático,
+                    come-cotas e cupons semestrais.
+                </p>
+                <div class="project-tags">
+                    <span class="tag">Finanças</span>
+                    <span class="tag">Investimentos</span>
+                    <span class="tag">Calculadora</span>
+                </div>
+                <a href="calculadora-renda-fixa-v4.html" class="project-link">
+                    Acessar Calculadora
+                    <span class="arrow">→</span>
+                </a>
+            </div>
+
+            <!-- Projeto 2: Diagrama de Gestão de APIs -->
+            <div class="project-card">
+                <div class="project-icon diagram">🔐</div>
+                <h3 class="project-title">Diagrama de Governança de APIs</h3>
+                <p class="project-description">
+                    Visualização interativa comparando cenários de governança de APIs no contexto do ACT SSP/SC ↔ MJSP.
+                    Demonstra o impacto da centralização versus descentralização de chaves de API em situações de
+                    incidente de segurança.
+                </p>
+                <div class="project-tags">
+                    <span class="tag">Governança</span>
+                    <span class="tag">APIs</span>
+                    <span class="tag">Segurança</span>
+                    <span class="tag">Visualização</span>
+                </div>
+                <a href="diagrama-gestao-apis.html" class="project-link">
+                    Acessar Diagrama
+                    <span class="arrow">→</span>
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p class="footer-brand">Projetos CGINT</p>
+        <p>Ferramentas desenvolvidas para fins educacionais e análise técnica</p>
+    </footer>
+</body>
+</html>

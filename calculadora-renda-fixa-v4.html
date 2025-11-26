@@ -1,0 +1,1171 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Renda Fixa | Comparativo com Reinvestimento</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+        :root {
+            --primary: #1e3a5f;
+            --primary-light: #2d5a87;
+            --accent: #2563eb;
+            --success: #059669;
+            --warning: #d97706;
+            --surface: #ffffff;
+            --surface-alt: #f8fafc;
+            --border: #e2e8f0;
+            --text: #1e293b;
+            --text-muted: #64748b;
+            --shadow: 0 1px 3px rgba(0,0,0,0.1);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1);
+            --radius: 8px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--surface-alt);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .container { max-width: 1100px; margin: 0 auto; padding: 1.5rem; }
+
+        /* Header */
+        header {
+            background: var(--primary);
+            color: white;
+            padding: 1.5rem 0;
+            margin-bottom: 1.5rem;
+        }
+
+        h1 { font-size: 1.5rem; font-weight: 700; }
+        .subtitle { color: #94a3b8; font-size: 0.9rem; margin-top: 0.25rem; }
+
+        /* Cards */
+        .card {
+            background: var(--surface);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 1.25rem;
+            margin-bottom: 1.25rem;
+            border: 1px solid var(--border);
+        }
+
+        .card-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        /* Grid */
+        .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem; }
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+        .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+
+        @media (max-width: 900px) { .grid-4 { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 768px) { .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; } }
+
+        /* Form */
+        .form-group { margin-bottom: 0.875rem; }
+        
+        label { 
+            display: block; 
+            font-size: 0.8rem; 
+            font-weight: 500; 
+            color: var(--text); 
+            margin-bottom: 0.35rem; 
+        }
+        
+        .label-hint { font-weight: 400; color: var(--text-muted); }
+
+        input[type="number"], select {
+            width: 100%;
+            padding: 0.625rem 0.875rem;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            font-family: inherit;
+            font-size: 0.9rem;
+            transition: border-color 0.2s;
+            background: var(--surface);
+        }
+
+        input[type="number"]:focus, select:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 0;
+            margin-bottom: 1.25rem;
+            background: var(--surface);
+            border-radius: var(--radius);
+            padding: 0.25rem;
+            border: 1px solid var(--border);
+        }
+
+        .tab {
+            flex: 1;
+            padding: 0.625rem 1rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            background: none;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tab:hover { color: var(--text); }
+        .tab.active { color: white; background: var(--primary); }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* Button */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.875rem 1.5rem;
+            font-family: inherit;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border: none;
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover { background: var(--primary-light); }
+        .btn-full { width: 100%; }
+
+        /* Results */
+        #results, #resultsLongTerm { display: none; }
+        #results.show, #resultsLongTerm.show { display: block; }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 1.5rem 0 1rem;
+            color: var(--primary);
+        }
+
+        /* Result Cards */
+        .result-card {
+            background: var(--surface);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 1.25rem;
+            border: 1px solid var(--border);
+            position: relative;
+        }
+
+        .result-card.best {
+            border-color: var(--success);
+            border-width: 2px;
+        }
+
+        .result-card.best::before {
+            content: '⭐ MELHOR';
+            position: absolute;
+            top: -10px;
+            left: 1rem;
+            background: var(--success);
+            color: white;
+            font-size: 0.65rem;
+            font-weight: 700;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+        }
+
+        .result-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.875rem;
+        }
+
+        .result-name { font-size: 1rem; font-weight: 600; color: var(--text); }
+        .result-rate { font-size: 0.8rem; color: var(--text-muted); }
+
+        .result-badge {
+            display: inline-block;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.65rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .badge-exempt { background: #d1fae5; color: #065f46; }
+        .badge-ir { background: #fee2e2; color: #991b1b; }
+
+        .result-values {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+            margin-bottom: 0.875rem;
+        }
+
+        .result-item {
+            text-align: center;
+            padding: 0.5rem;
+            background: var(--surface-alt);
+            border-radius: 6px;
+        }
+
+        .result-item-label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-bottom: 0.2rem;
+        }
+
+        .result-item-value {
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .result-item-value.negative { color: #dc2626; }
+
+        .result-final {
+            text-align: center;
+            padding: 1rem;
+            background: var(--primary);
+            border-radius: 6px;
+            color: white;
+        }
+
+        .result-final-label { font-size: 0.7rem; opacity: 0.8; margin-bottom: 0.2rem; }
+        .result-final-value { font-size: 1.4rem; font-weight: 700; }
+        .result-final-pct { font-size: 0.8rem; opacity: 0.8; margin-top: 0.2rem; }
+
+        /* Table */
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+        }
+
+        .comparison-table th, .comparison-table td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .comparison-table th {
+            background: var(--surface-alt);
+            font-weight: 600;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+
+        .comparison-table .winner { background: #f0fdf4; }
+        .comparison-table .positive { color: var(--success); font-weight: 600; }
+        .comparison-table .negative { color: #dc2626; font-weight: 600; }
+
+        /* Chart */
+        .chart-bar-item { margin-bottom: 0.875rem; }
+
+        .chart-bar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.3rem;
+            font-size: 0.85rem;
+        }
+
+        .chart-bar-name { font-weight: 500; }
+        .chart-bar-value { color: var(--text-muted); }
+
+        .chart-bar-track {
+            height: 28px;
+            background: var(--surface-alt);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .chart-bar-fill {
+            height: 100%;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 0.625rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: white;
+            transition: width 0.5s ease;
+        }
+
+        .chart-bar-fill.cdb { background: #3b82f6; }
+        .chart-bar-fill.lci { background: #10b981; }
+        .chart-bar-fill.selic { background: #8b5cf6; }
+        .chart-bar-fill.ipca { background: #f59e0b; }
+        .chart-bar-fill.comecotas { background: #ec4899; }
+        .chart-bar-fill.cupom { background: #14b8a6; }
+
+        /* Info Box */
+        .info-box {
+            padding: 0.875rem;
+            background: #f0f9ff;
+            border: 1px solid #bae6fd;
+            border-radius: var(--radius);
+            font-size: 0.8rem;
+            color: var(--text);
+            margin-bottom: 1rem;
+        }
+
+        /* Reinvest Detail */
+        .reinvest-info {
+            margin-top: 0.75rem;
+            padding: 0.625rem;
+            background: #fffbeb;
+            border: 1px solid #fde68a;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            color: #92400e;
+        }
+
+        /* Checkbox */
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            background: var(--surface-alt);
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid var(--border);
+        }
+
+        .checkbox-item:hover {
+            border-color: var(--accent);
+        }
+
+        .checkbox-item input {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--accent);
+            margin-top: 2px;
+            cursor: pointer;
+        }
+
+        .checkbox-label {
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: var(--text);
+            display: block;
+        }
+
+        .checkbox-desc {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            display: block;
+            margin-top: 0.2rem;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 1.5rem;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+
+        @media (max-width: 640px) {
+            .container { padding: 1rem; }
+            h1 { font-size: 1.25rem; }
+            .result-values { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>📊 Calculadora de Renda Fixa</h1>
+            <p class="subtitle">Compare CDB, LCI/LCA, Tesouro SELIC e IPCA+ com simulação de reinvestimento</p>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Dados do Investimento -->
+        <div class="card">
+            <div class="card-title">💰 Dados do Investimento</div>
+            <div class="grid-3">
+                <div class="form-group">
+                    <label>Valor a Investir (R$)</label>
+                    <input type="number" id="valor" value="10000" min="100" step="100">
+                </div>
+                <div class="form-group">
+                    <label>Taxa SELIC <span class="label-hint">(% a.a.)</span></label>
+                    <input type="number" id="selic" value="14.25" min="0" step="0.25">
+                </div>
+                <div class="form-group">
+                    <label>IPCA Projetado <span class="label-hint">(% a.a.)</span></label>
+                    <input type="number" id="ipca" value="4.5" min="0" step="0.1">
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('curto')">📅 Curto/Médio Prazo</button>
+            <button class="tab" onclick="switchTab('longo')">📈 Longo Prazo (IPCA+)</button>
+        </div>
+
+        <!-- Tab Curto Prazo -->
+        <div id="tabCurto" class="tab-content active">
+            <div class="card">
+                <div class="card-title">🏛️ Tesouro SELIC de Referência</div>
+                <div class="info-box">
+                    💡 O prazo do Tesouro SELIC selecionado será o <strong>horizonte de comparação</strong>. 
+                    CDBs/LCIs com prazo menor serão <strong>reinvestidos</strong> automaticamente.
+                </div>
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>Título Tesouro SELIC</label>
+                        <select id="tesouroSelic">
+                            <option value="2028-03-01" data-spread="0.06">Tesouro Selic 2028 - SELIC + 0,06%</option>
+                            <option value="2031-03-01" data-spread="0.11" selected>Tesouro Selic 2031 - SELIC + 0,11%</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Prazo Calculado</label>
+                        <input type="text" id="prazoCalculado" readonly style="background: var(--surface-alt);">
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div class="card">
+                    <div class="card-title">📈 CDB</div>
+                    <div class="form-group">
+                        <label>Taxa <span class="label-hint">(% do CDI)</span></label>
+                        <input type="number" id="cdbTaxa" value="110" min="80" max="150" step="1">
+                    </div>
+                    <div class="form-group">
+                        <label>Prazo do CDB <span class="label-hint">(meses)</span></label>
+                        <input type="number" id="cdbPrazo" value="12" min="1" max="60" step="1">
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">🌿 LCI/LCA</div>
+                    <div class="form-group">
+                        <label>Taxa <span class="label-hint">(% do CDI)</span></label>
+                        <input type="number" id="lciTaxa" value="93" min="70" max="120" step="1">
+                    </div>
+                    <div class="form-group">
+                        <label>Prazo da LCI/LCA <span class="label-hint">(meses)</span></label>
+                        <input type="number" id="lciPrazo" value="12" min="3" max="60" step="1">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Simulações Especiais -->
+            <div class="card">
+                <div class="card-title">⚙️ Simulações Especiais</div>
+                <div class="checkbox-group">
+                    <label class="checkbox-item">
+                        <input type="checkbox" id="simComeCotas">
+                        <div>
+                            <span class="checkbox-label">Simular Come-Cotas (Fundos)</span>
+                            <span class="checkbox-desc">Antecipação de IR semestral (15% LP / 20% CP) - reduz base de juros compostos</span>
+                        </div>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" id="simCupom">
+                        <div>
+                            <span class="checkbox-label">Simular Cupom Semestral</span>
+                            <span class="checkbox-desc">Juros pagos a cada 6 meses - reduz efeito dos juros compostos</span>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <button class="btn btn-primary btn-full" onclick="calcularCurtoPrazo()">
+                🧮 Calcular Curto/Médio Prazo
+            </button>
+
+            <section id="results">
+                <h2 class="section-title">📈 Resultados</h2>
+                <div class="grid-3" id="resultCards"></div>
+
+                <div class="card">
+                    <div class="card-title">📊 Tabela Comparativa</div>
+                    <div style="overflow-x: auto;">
+                        <table class="comparison-table" id="comparisonTable"></table>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">📊 Gráfico Comparativo</div>
+                    <div id="chartBars"></div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Tab Longo Prazo -->
+        <div id="tabLongo" class="tab-content">
+            <div class="card">
+                <div class="card-title">📊 Tesouro IPCA+ (Referência de Longo Prazo)</div>
+                <div class="info-box">
+                    💡 Comparamos o <strong>Tesouro IPCA+</strong> mantido até o vencimento contra 
+                    <strong>reinvestimentos sucessivos</strong> em SELIC, CDB e LCI pelo mesmo período.
+                </div>
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>Tesouro IPCA+ Selecionado</label>
+                        <select id="ipcaVencimento">
+                            <option value="2029-05-15">Tesouro IPCA+ 2029</option>
+                            <option value="2040-08-15" selected>Tesouro IPCA+ 2040</option>
+                            <option value="2050-08-15">Tesouro IPCA+ 2050</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Taxa Real <span class="label-hint">(IPCA + X%)</span></label>
+                        <input type="number" id="ipcaTaxa" value="7.0" min="3" max="12" step="0.1">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Prazo Calculado</label>
+                    <input type="text" id="prazoIPCA" readonly style="background: var(--surface-alt);">
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">🔄 Parâmetros de Reinvestimento</div>
+                <div class="grid-3">
+                    <div class="form-group">
+                        <label>Tesouro SELIC <span class="label-hint">(spread)</span></label>
+                        <input type="number" id="selicSpreadLongo" value="0.10" min="0" max="1" step="0.01">
+                    </div>
+                    <div class="form-group">
+                        <label>CDB Médio <span class="label-hint">(% CDI)</span></label>
+                        <input type="number" id="cdbTaxaLongo" value="110" min="80" max="150" step="1">
+                    </div>
+                    <div class="form-group">
+                        <label>LCI/LCA Média <span class="label-hint">(% CDI)</span></label>
+                        <input type="number" id="lciTaxaLongo" value="93" min="70" max="120" step="1">
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn btn-primary btn-full" onclick="calcularLongoPrazo()">
+                🧮 Calcular Longo Prazo
+            </button>
+
+            <section id="resultsLongTerm">
+                <h2 class="section-title">📈 Resultados - Longo Prazo</h2>
+                <div class="grid-4" id="resultCardsLong"></div>
+
+                <div class="card">
+                    <div class="card-title">📊 Tabela Comparativa</div>
+                    <div style="overflow-x: auto;">
+                        <table class="comparison-table" id="comparisonTableLong"></table>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer>
+        <p>Calculadora de Renda Fixa | Desenvolvido para fins educacionais</p>
+        <p>Os cálculos são aproximações. Consulte um assessor de investimentos.</p>
+    </footer>
+
+    <script>
+        // ========================================
+        // UTILIDADES
+        // ========================================
+        
+        function formatBRL(value) {
+            return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        }
+
+        function formatPct(value, decimals = 2) {
+            return value.toFixed(decimals).replace('.', ',') + '%';
+        }
+
+        function parseDate(dateStr) {
+            return new Date(dateStr + 'T00:00:00');
+        }
+
+        function daysBetween(date1, date2) {
+            const oneDay = 24 * 60 * 60 * 1000;
+            return Math.round(Math.abs((date2 - date1) / oneDay));
+        }
+
+        function switchTab(tab) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            
+            if (tab === 'curto') {
+                document.querySelector('.tab:nth-child(1)').classList.add('active');
+                document.getElementById('tabCurto').classList.add('active');
+            } else {
+                document.querySelector('.tab:nth-child(2)').classList.add('active');
+                document.getElementById('tabLongo').classList.add('active');
+                updatePrazoIPCA();
+            }
+        }
+
+        // ========================================
+        // CÁLCULOS DE IR
+        // ========================================
+
+        function getIRRate(days) {
+            if (days <= 180) return 0.225;
+            if (days <= 360) return 0.20;
+            if (days <= 720) return 0.175;
+            return 0.15;
+        }
+
+        function getIRRateLabel(days) {
+            if (days <= 180) return '22,5%';
+            if (days <= 360) return '20%';
+            if (days <= 720) return '17,5%';
+            return '15%';
+        }
+
+        // ========================================
+        // CÁLCULOS DE INVESTIMENTO
+        // ========================================
+
+        function calcCDBWithReinvestment(principal, cdiRate, pctCDI, cdbMonths, totalDays) {
+            const cdbDays = cdbMonths * 30;
+            const dailyRate = Math.pow(1 + (cdiRate * pctCDI / 100), 1/365) - 1;
+            
+            let currentValue = principal;
+            let totalIR = 0;
+            let cycles = [];
+            let daysRemaining = totalDays;
+
+            while (daysRemaining > 0) {
+                const daysThisCycle = Math.min(cdbDays, daysRemaining);
+                const grossValue = currentValue * Math.pow(1 + dailyRate, daysThisCycle);
+                const profit = grossValue - currentValue;
+                const irRate = getIRRate(daysThisCycle);
+                const irPaid = profit * irRate;
+
+                cycles.push({ days: daysThisCycle, irRate: irRate });
+                totalIR += irPaid;
+                currentValue = grossValue - irPaid;
+                daysRemaining -= daysThisCycle;
+            }
+
+            return {
+                finalGross: principal + cycles.reduce((sum, c) => sum + (currentValue - principal), 0) + totalIR,
+                finalNet: currentValue,
+                totalIR: totalIR,
+                numCycles: cycles.length
+            };
+        }
+
+        function calcLCIWithReinvestment(principal, cdiRate, pctCDI, lciMonths, totalDays) {
+            const lciDays = lciMonths * 30;
+            const dailyRate = Math.pow(1 + (cdiRate * pctCDI / 100), 1/365) - 1;
+            
+            let currentValue = principal;
+            let numCycles = 0;
+            let daysRemaining = totalDays;
+
+            while (daysRemaining > 0) {
+                const daysThisCycle = Math.min(lciDays, daysRemaining);
+                currentValue = currentValue * Math.pow(1 + dailyRate, daysThisCycle);
+                numCycles++;
+                daysRemaining -= daysThisCycle;
+            }
+
+            return {
+                finalGross: currentValue,
+                finalNet: currentValue,
+                totalIR: 0,
+                numCycles: numCycles
+            };
+        }
+
+        function calcTesouroSelic(principal, selicRate, spread, totalDays) {
+            const effectiveRate = selicRate + spread;
+            const dailyRate = Math.pow(1 + effectiveRate, 1/365) - 1;
+            
+            const grossValue = principal * Math.pow(1 + dailyRate, totalDays);
+            const profit = grossValue - principal;
+            const irRate = getIRRate(totalDays);
+            const irPaid = profit * irRate;
+
+            return {
+                finalGross: grossValue,
+                finalNet: grossValue - irPaid,
+                totalIR: irPaid,
+                irRate: irRate
+            };
+        }
+
+        function calcTesouroIPCA(principal, ipca, taxaReal, totalDays) {
+            const annualRate = (1 + ipca) * (1 + taxaReal) - 1;
+            const dailyRate = Math.pow(1 + annualRate, 1/365) - 1;
+            
+            const grossValue = principal * Math.pow(1 + dailyRate, totalDays);
+            const profit = grossValue - principal;
+            const irRate = getIRRate(totalDays);
+            const irPaid = profit * irRate;
+
+            return {
+                finalGross: grossValue,
+                finalNet: grossValue - irPaid,
+                totalIR: irPaid,
+                irRate: irRate
+            };
+        }
+
+        // Come-Cotas: antecipação de IR semestral
+        function calcWithComeCotas(principal, annualRate, totalDays) {
+            const semesterDays = 180;
+            let currentValue = principal;
+            let totalIR = 0;
+            const dailyRate = Math.pow(1 + annualRate, 1/365) - 1;
+            let daysRemaining = totalDays;
+            let numSemesters = 0;
+            
+            while (daysRemaining > 0) {
+                numSemesters++;
+                const daysThisPeriod = Math.min(semesterDays, daysRemaining);
+                const grossValue = currentValue * Math.pow(1 + dailyRate, daysThisPeriod);
+                const profit = grossValue - currentValue;
+                
+                // Come-cotas: 15% para LP (>365 dias acumulados), 20% para CP
+                const irRate = (numSemesters * 180 > 365) ? 0.15 : 0.20;
+                const irPaid = profit * irRate;
+                
+                totalIR += irPaid;
+                currentValue = grossValue - irPaid;
+                daysRemaining -= daysThisPeriod;
+            }
+
+            return {
+                finalNet: currentValue,
+                totalIR: totalIR,
+                numSemesters: numSemesters
+            };
+        }
+
+        // Cupom Semestral: juros pagos a cada 6 meses
+        function calcWithCupom(principal, annualRate, totalDays) {
+            const semesterDays = 180;
+            let currentPrincipal = principal;
+            let totalCupons = 0;
+            let totalIR = 0;
+            const dailyRate = Math.pow(1 + annualRate, 1/365) - 1;
+            let daysRemaining = totalDays;
+            let numCupons = 0;
+            let daysAccumulated = 0;
+            
+            while (daysRemaining > 0) {
+                numCupons++;
+                const daysThisPeriod = Math.min(semesterDays, daysRemaining);
+                daysAccumulated += daysThisPeriod;
+                
+                // Calcula juros do período
+                const grossValue = currentPrincipal * Math.pow(1 + dailyRate, daysThisPeriod);
+                const cupom = grossValue - currentPrincipal;
+                
+                // IR sobre o cupom (tabela regressiva baseada no tempo acumulado)
+                const irRate = getIRRate(daysAccumulated);
+                const irPaid = cupom * irRate;
+                const cupomLiquido = cupom - irPaid;
+                
+                totalCupons += cupomLiquido;
+                totalIR += irPaid;
+                
+                // Principal permanece o mesmo (cupom é pago, não reinvestido)
+                daysRemaining -= daysThisPeriod;
+            }
+
+            return {
+                finalPrincipal: currentPrincipal,
+                totalCupons: totalCupons,
+                finalNet: currentPrincipal + totalCupons,
+                totalIR: totalIR,
+                numCupons: numCupons
+            };
+        }
+
+        function calcSelicWithReinvestment(principal, selicRate, spread, totalDays) {
+            const cycleDays = 1095;
+            let currentValue = principal;
+            let totalIR = 0;
+            let daysRemaining = totalDays;
+            
+            while (daysRemaining > 0) {
+                const daysThisCycle = Math.min(cycleDays, daysRemaining);
+                const effectiveRate = selicRate + spread;
+                const dailyRate = Math.pow(1 + effectiveRate, 1/365) - 1;
+                
+                const grossValue = currentValue * Math.pow(1 + dailyRate, daysThisCycle);
+                const profit = grossValue - currentValue;
+                const irPaid = profit * getIRRate(daysThisCycle);
+                
+                totalIR += irPaid;
+                currentValue = grossValue - irPaid;
+                daysRemaining -= daysThisCycle;
+            }
+
+            return { finalNet: currentValue, totalIR: totalIR };
+        }
+
+        // ========================================
+        // ATUALIZAR PRAZOS
+        // ========================================
+
+        function updatePrazoCalculado() {
+            const select = document.getElementById('tesouroSelic');
+            const vencimento = parseDate(select.value);
+            const dias = daysBetween(new Date(), vencimento);
+            document.getElementById('prazoCalculado').value = `${dias} dias (≈ ${(dias/365).toFixed(1)} anos)`;
+            return dias;
+        }
+
+        function updatePrazoIPCA() {
+            const select = document.getElementById('ipcaVencimento');
+            const vencimento = parseDate(select.value);
+            const dias = daysBetween(new Date(), vencimento);
+            document.getElementById('prazoIPCA').value = `${dias} dias (≈ ${(dias/365).toFixed(1)} anos)`;
+            return dias;
+        }
+
+        document.getElementById('tesouroSelic').addEventListener('change', updatePrazoCalculado);
+        document.getElementById('ipcaVencimento').addEventListener('change', updatePrazoIPCA);
+
+        // ========================================
+        // CALCULAR CURTO PRAZO
+        // ========================================
+
+        function calcularCurtoPrazo() {
+            const valor = parseFloat(document.getElementById('valor').value);
+            const selic = parseFloat(document.getElementById('selic').value) / 100;
+            
+            const tesouroSelect = document.getElementById('tesouroSelic');
+            const tesouroVencimento = parseDate(tesouroSelect.value);
+            const tesouroSpread = parseFloat(tesouroSelect.selectedOptions[0].dataset.spread) / 100;
+            
+            const cdbTaxa = parseFloat(document.getElementById('cdbTaxa').value);
+            const cdbPrazo = parseInt(document.getElementById('cdbPrazo').value);
+            const lciTaxa = parseFloat(document.getElementById('lciTaxa').value);
+            const lciPrazo = parseInt(document.getElementById('lciPrazo').value);
+
+            const simComeCotas = document.getElementById('simComeCotas').checked;
+            const simCupom = document.getElementById('simCupom').checked;
+
+            const totalDays = daysBetween(new Date(), tesouroVencimento);
+
+            const cdbResult = calcCDBWithReinvestment(valor, selic, cdbTaxa, cdbPrazo, totalDays);
+            const lciResult = calcLCIWithReinvestment(valor, selic, lciTaxa, lciPrazo, totalDays);
+            const selicResult = calcTesouroSelic(valor, selic, tesouroSpread, totalDays);
+
+            let results = [
+                {
+                    id: 'cdb', name: 'CDB', rate: `${cdbTaxa}% CDI`,
+                    gross: cdbResult.finalGross, ir: cdbResult.totalIR, net: cdbResult.finalNet,
+                    profit: cdbResult.finalNet - valor,
+                    pctTotal: ((cdbResult.finalNet - valor) / valor * 100),
+                    pctAnnual: (Math.pow(cdbResult.finalNet / valor, 365/totalDays) - 1) * 100,
+                    exempt: false, reinvest: cdbResult.numCycles > 1, numCycles: cdbResult.numCycles
+                },
+                {
+                    id: 'lci', name: 'LCI/LCA', rate: `${lciTaxa}% CDI`,
+                    gross: lciResult.finalGross, ir: 0, net: lciResult.finalNet,
+                    profit: lciResult.finalNet - valor,
+                    pctTotal: ((lciResult.finalNet - valor) / valor * 100),
+                    pctAnnual: (Math.pow(lciResult.finalNet / valor, 365/totalDays) - 1) * 100,
+                    exempt: true, reinvest: lciResult.numCycles > 1, numCycles: lciResult.numCycles
+                },
+                {
+                    id: 'selic', name: 'Tesouro SELIC', rate: `SELIC+${(tesouroSpread*100).toFixed(2)}%`,
+                    gross: selicResult.finalGross, ir: selicResult.totalIR, net: selicResult.finalNet,
+                    profit: selicResult.finalNet - valor,
+                    pctTotal: ((selicResult.finalNet - valor) / valor * 100),
+                    pctAnnual: (Math.pow(selicResult.finalNet / valor, 365/totalDays) - 1) * 100,
+                    exempt: false, reinvest: false, irLabel: getIRRateLabel(totalDays)
+                }
+            ];
+
+            // Adicionar simulação Come-Cotas se marcado
+            if (simComeCotas) {
+                const taxaCDB = selic * (cdbTaxa / 100);
+                const comeCotas = calcWithComeCotas(valor, taxaCDB, totalDays);
+                results.push({
+                    id: 'comecotas', name: 'Fundo (Come-Cotas)', rate: `${cdbTaxa}% CDI`,
+                    gross: comeCotas.finalNet + comeCotas.totalIR, ir: comeCotas.totalIR, net: comeCotas.finalNet,
+                    profit: comeCotas.finalNet - valor,
+                    pctTotal: ((comeCotas.finalNet - valor) / valor * 100),
+                    pctAnnual: (Math.pow(comeCotas.finalNet / valor, 365/totalDays) - 1) * 100,
+                    exempt: false, reinvest: false, 
+                    irLabel: `${comeCotas.numSemesters}x sem.`,
+                    special: 'Come-cotas: IR antecipado semestral'
+                });
+            }
+
+            // Adicionar simulação Cupom Semestral se marcado
+            if (simCupom) {
+                const taxaSelic = selic + tesouroSpread;
+                const cupom = calcWithCupom(valor, taxaSelic, totalDays);
+                results.push({
+                    id: 'cupom', name: 'Tesouro c/ Cupom', rate: `SELIC+${(tesouroSpread*100).toFixed(2)}%`,
+                    gross: cupom.finalNet + cupom.totalIR, ir: cupom.totalIR, net: cupom.finalNet,
+                    profit: cupom.finalNet - valor,
+                    pctTotal: ((cupom.finalNet - valor) / valor * 100),
+                    pctAnnual: (Math.pow(cupom.finalNet / valor, 365/totalDays) - 1) * 100,
+                    exempt: false, reinvest: false, 
+                    irLabel: `${cupom.numCupons}x cupom`,
+                    special: 'Cupom semestral: juros pagos a cada 6m'
+                });
+            }
+
+            results.sort((a, b) => b.net - a.net);
+            renderResults(results, valor, totalDays, 'resultCards', 'comparisonTable', 'chartBars');
+            document.getElementById('results').classList.add('show');
+        }
+
+        // ========================================
+        // CALCULAR LONGO PRAZO
+        // ========================================
+
+        function calcularLongoPrazo() {
+            const valor = parseFloat(document.getElementById('valor').value);
+            const selic = parseFloat(document.getElementById('selic').value) / 100;
+            const ipca = parseFloat(document.getElementById('ipca').value) / 100;
+            
+            const ipcaVencimento = parseDate(document.getElementById('ipcaVencimento').value);
+            const ipcaTaxa = parseFloat(document.getElementById('ipcaTaxa').value) / 100;
+            
+            const selicSpread = parseFloat(document.getElementById('selicSpreadLongo').value) / 100;
+            const cdbTaxa = parseFloat(document.getElementById('cdbTaxaLongo').value);
+            const lciTaxa = parseFloat(document.getElementById('lciTaxaLongo').value);
+
+            const totalDays = daysBetween(new Date(), ipcaVencimento);
+
+            const ipcaResult = calcTesouroIPCA(valor, ipca, ipcaTaxa, totalDays);
+            const selicResult = calcSelicWithReinvestment(valor, selic, selicSpread, totalDays);
+            const cdbResult = calcCDBWithReinvestment(valor, selic, cdbTaxa, 12, totalDays);
+            const lciResult = calcLCIWithReinvestment(valor, selic, lciTaxa, 12, totalDays);
+
+            const results = [
+                {
+                    id: 'ipca', name: 'Tesouro IPCA+', rate: `IPCA+${(ipcaTaxa*100).toFixed(1)}%`,
+                    gross: ipcaResult.finalGross, ir: ipcaResult.totalIR, net: ipcaResult.finalNet,
+                    profit: ipcaResult.finalNet - valor,
+                    pctTotal: ((ipcaResult.finalNet - valor) / valor * 100),
+                    pctAnnual: (Math.pow(ipcaResult.finalNet / valor, 365/totalDays) - 1) * 100,
+                    exempt: false, reinvest: false, irLabel: '15%'
+                },
+                {
+                    id: 'selic', name: 'SELIC (reinv.)', rate: `SELIC+${(selicSpread*100).toFixed(2)}%`,
+                    gross: selicResult.finalNet + selicResult.totalIR, ir: selicResult.totalIR, net: selicResult.finalNet,
+                    profit: selicResult.finalNet - valor,
+                    pctTotal: ((selicResult.finalNet - valor) / valor * 100),
+                    pctAnnual: (Math.pow(selicResult.finalNet / valor, 365/totalDays) - 1) * 100,
+                    exempt: false, reinvest: true
+                },
+                {
+                    id: 'cdb', name: 'CDB (reinv.)', rate: `${cdbTaxa}% CDI`,
+                    gross: cdbResult.finalGross, ir: cdbResult.totalIR, net: cdbResult.finalNet,
+                    profit: cdbResult.finalNet - valor,
+                    pctTotal: ((cdbResult.finalNet - valor) / valor * 100),
+                    pctAnnual: (Math.pow(cdbResult.finalNet / valor, 365/totalDays) - 1) * 100,
+                    exempt: false, reinvest: true, numCycles: cdbResult.numCycles
+                },
+                {
+                    id: 'lci', name: 'LCI (reinv.)', rate: `${lciTaxa}% CDI`,
+                    gross: lciResult.finalGross, ir: 0, net: lciResult.finalNet,
+                    profit: lciResult.finalNet - valor,
+                    pctTotal: ((lciResult.finalNet - valor) / valor * 100),
+                    pctAnnual: (Math.pow(lciResult.finalNet / valor, 365/totalDays) - 1) * 100,
+                    exempt: true, reinvest: true
+                }
+            ];
+
+            results.sort((a, b) => b.net - a.net);
+            renderResultsLong(results, valor, totalDays);
+            document.getElementById('resultsLongTerm').classList.add('show');
+        }
+
+        // ========================================
+        // RENDERIZAR
+        // ========================================
+
+        function renderResults(results, valorInicial, totalDays, cardsId, tableId, chartId) {
+            const cardsContainer = document.getElementById(cardsId);
+            const tableContainer = document.getElementById(tableId);
+            const chartContainer = document.getElementById(chartId);
+            const maxProfit = Math.max(...results.map(r => r.profit));
+            const best = results[0];
+
+            cardsContainer.innerHTML = '';
+            chartContainer.innerHTML = '';
+
+            results.forEach((r, i) => {
+                const card = document.createElement('div');
+                card.className = `result-card ${i === 0 ? 'best' : ''}`;
+                
+                card.innerHTML = `
+                    <div class="result-header">
+                        <div>
+                            <div class="result-name">${r.name}</div>
+                            <div class="result-rate">${r.rate}</div>
+                        </div>
+                        ${r.exempt 
+                            ? '<span class="result-badge badge-exempt">Isento IR</span>'
+                            : `<span class="result-badge badge-ir">IR ${r.irLabel || (r.numCycles ? r.numCycles + 'x' : '')}</span>`
+                        }
+                    </div>
+                    <div class="result-values">
+                        <div class="result-item">
+                            <div class="result-item-label">Bruto</div>
+                            <div class="result-item-value">${formatBRL(r.gross)}</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-item-label">IR</div>
+                            <div class="result-item-value ${r.ir > 0 ? 'negative' : ''}">${r.exempt ? 'Isento' : '-' + formatBRL(r.ir)}</div>
+                        </div>
+                    </div>
+                    <div class="result-final">
+                        <div class="result-final-label">LÍQUIDO</div>
+                        <div class="result-final-value">${formatBRL(r.net)}</div>
+                        <div class="result-final-pct">+${formatPct(r.pctTotal)} | ${formatPct(r.pctAnnual)} a.a.</div>
+                    </div>
+                    ${r.reinvest ? `<div class="reinvest-info">🔄 ${r.numCycles || 'Múltiplos'} ciclos de reinvestimento</div>` : ''}
+                    ${r.special ? `<div class="reinvest-info">⚠️ ${r.special}</div>` : ''}
+                `;
+                cardsContainer.appendChild(card);
+            });
+
+            // Tabela
+            tableContainer.innerHTML = `
+                <thead>
+                    <tr>
+                        <th>Investimento</th>
+                        <th>Líquido</th>
+                        <th>Ganho</th>
+                        <th>vs Melhor</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${results.map((r, i) => {
+                        const diff = r.net - best.net;
+                        const diffPct = (diff / valorInicial * 100);
+                        return `
+                            <tr class="${i === 0 ? 'winner' : ''}">
+                                <td><strong>${r.name}</strong><br><small>${r.rate}</small></td>
+                                <td><strong>${formatBRL(r.net)}</strong></td>
+                                <td class="positive">+${formatBRL(r.profit)}<br><small>+${formatPct(r.pctTotal)}</small></td>
+                                <td class="${diff < 0 ? 'negative' : ''}">${i === 0 ? '—' : `${formatBRL(diff)}<br><small>${formatPct(diffPct)}</small>`}</td>
+                            </tr>
+                        `;
+                    }).join('')}
+                </tbody>
+            `;
+
+            // Gráfico
+            results.forEach(r => {
+                const bar = document.createElement('div');
+                bar.className = 'chart-bar-item';
+                bar.innerHTML = `
+                    <div class="chart-bar-header">
+                        <span class="chart-bar-name">${r.name}</span>
+                        <span class="chart-bar-value">+${formatBRL(r.profit)}</span>
+                    </div>
+                    <div class="chart-bar-track">
+                        <div class="chart-bar-fill ${r.id}" style="width: ${(r.profit/maxProfit*100).toFixed(1)}%">${formatPct(r.pctAnnual)} a.a.</div>
+                    </div>
+                `;
+                chartContainer.appendChild(bar);
+            });
+        }
+
+        function renderResultsLong(results, valorInicial, totalDays) {
+            const cardsContainer = document.getElementById('resultCardsLong');
+            const tableContainer = document.getElementById('comparisonTableLong');
+            const best = results[0];
+            const anos = (totalDays / 365).toFixed(1);
+
+            cardsContainer.innerHTML = '';
+
+            results.forEach((r, i) => {
+                const card = document.createElement('div');
+                card.className = `result-card ${i === 0 ? 'best' : ''}`;
+                card.innerHTML = `
+                    <div class="result-header">
+                        <div>
+                            <div class="result-name">${r.name}</div>
+                            <div class="result-rate">${r.rate}</div>
+                        </div>
+                    </div>
+                    <div class="result-final" style="margin-top: 0.5rem;">
+                        <div class="result-final-label">LÍQUIDO (${anos}a)</div>
+                        <div class="result-final-value" style="font-size: 1.2rem;">${formatBRL(r.net)}</div>
+                        <div class="result-final-pct">+${formatPct(r.pctTotal)}</div>
+                    </div>
+                `;
+                cardsContainer.appendChild(card);
+            });
+
+            tableContainer.innerHTML = `
+                <thead>
+                    <tr>
+                        <th>Investimento</th>
+                        <th>Líquido</th>
+                        <th>Ganho</th>
+                        <th>vs Melhor</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${results.map((r, i) => {
+                        const diff = r.net - best.net;
+                        const diffPct = (diff / valorInicial * 100);
+                        return `
+                            <tr class="${i === 0 ? 'winner' : ''}">
+                                <td><strong>${r.name}</strong><br><small>${r.rate}</small></td>
+                                <td><strong>${formatBRL(r.net)}</strong></td>
+                                <td class="positive">+${formatBRL(r.profit)}<br><small>+${formatPct(r.pctTotal)}</small></td>
+                                <td class="${diff < 0 ? 'negative' : ''}">${i === 0 ? '—' : `${formatBRL(diff)}<br><small>${formatPct(diffPct)}</small>`}</td>
+                            </tr>
+                        `;
+                    }).join('')}
+                </tbody>
+            `;
+        }
+
+        // Init
+        window.onload = function() {
+            updatePrazoCalculado();
+            calcularCurtoPrazo();
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MJSP - Governança de API</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- React & ReactDOM (Development versions for standalone usage) -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+
+    <!-- Babel Standalone (to compile JSX in browser) -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <style>
+      body {
+        font-family: 'Inter', sans-serif;
+        background-color: #f8fafc;
+      }
+      .animate-flow {
+        animation: flow 1.5s infinite linear;
+      }
+      @keyframes flow {
+        0% { stroke-dashoffset: 20; }
+        100% { stroke-dashoffset: 0; }
+      }
+    </style>
+<script type="importmap">
+{
+  "imports": {
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "lucide-react": "https://aistudiocdn.com/lucide-react@^0.555.0"
+  }
+}
+</script>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        /**
+         * ------------------------------------------------------------------
+         * DATA & CONSTANTS
+         * ------------------------------------------------------------------
+         */
+        const SECTORS = [
+            { id: 'pc-ops', name: 'PC - Operações', type: 'PC', isViolating: false },
+            { id: 'pc-int', name: 'PC - Inteligência', type: 'PC', isViolating: true }, // The culprit
+            { id: 'pm-copom', name: 'PM - COPOM', type: 'PM', isViolating: false },
+            { id: 'pm-int', name: 'PM - Inteligência', type: 'PM', isViolating: false },
+            { id: 'igp', name: 'IGP - Perícia', type: 'IGP', isViolating: false },
+        ];
+
+        /**
+         * ------------------------------------------------------------------
+         * ICONS (SVG)
+         * Replaced Lucide imports with raw SVGs for standalone compatibility
+         * ------------------------------------------------------------------
+         */
+        const IconShield = ({ className }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+        );
+
+        const IconServer = ({ className }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/>
+            </svg>
+        );
+
+        const IconActivity = ({ className }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+            </svg>
+        );
+
+        const IconAlert = ({ className }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+            </svg>
+        );
+
+        const IconCheck = ({ className }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
+            </svg>
+        );
+
+        const IconX = ({ className }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/>
+            </svg>
+        );
+
+        const IconBuilding = ({ className }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/><path d="M10 6h4"/><path d="M10 10h4"/><path d="M10 14h4"/><path d="M10 18h4"/>
+            </svg>
+        );
+
+        const IconUsers = ({ className }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+        );
+
+        /**
+         * ------------------------------------------------------------------
+         * COMPONENTS
+         * ------------------------------------------------------------------
+         */
+
+        const ConnectionLines = ({ count, activeIndices, singleSource }) => {
+            return (
+                <div className="w-full h-16 relative overflow-hidden pointer-events-none" aria-hidden="true">
+                <svg width="100%" height="100%" preserveAspectRatio="none">
+                    {activeIndices.map((isActive, index) => {
+                    const startX = singleSource ? 50 : (100 / count) * index + (100 / count / 2);
+                    const endX = (100 / count) * index + (100 / count / 2);
+
+                    return (
+                        <g key={index}>
+                        {/* Background Line */}
+                        <line
+                            x1={`${startX}%`}
+                            y1="0"
+                            x2={`${endX}%`}
+                            y2="100%"
+                            stroke={isActive ? '#cbd5e1' : '#fca5a5'}
+                            strokeWidth="2"
+                        />
+                        {/* Flowing Data Animation (Only if active) */}
+                        {isActive && (
+                            <line
+                            x1={`${startX}%`}
+                            y1="0"
+                            x2={`${endX}%`}
+                            y2="100%"
+                            stroke="#22c55e"
+                            strokeWidth="2"
+                            strokeDasharray="4 4"
+                            className="animate-flow"
+                            />
+                        )}
+                        {/* Blocked Indicator line */}
+                        {!isActive && (
+                            <line
+                            x1={`${startX}%`}
+                            y1="0"
+                            x2={`${endX}%`}
+                            y2="100%"
+                            stroke="#ef4444"
+                            strokeWidth="2"
+                            strokeDasharray="4 4"
+                            opacity="0.6"
+                            />
+                        )}
+                        </g>
+                    );
+                    })}
+                </svg>
+                </div>
+            );
+        };
+
+        const CurrentScenario = ({ state }) => {
+            const isIncident = state === 'incident';
+            // In current scenario, if incident exists, ALL are blocked because the single API is blocked
+            const isApiBlocked = isIncident;
+
+            return (
+                <div className="flex-1 bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
+                {/* Header */}
+                <div className={`p-4 border-b ${isIncident ? 'bg-red-50 border-red-100' : 'bg-slate-50 border-slate-200'}`}>
+                    <h3 className="font-bold text-lg text-slate-800 flex items-center gap-2">
+                    Cenário 1: Atual
+                    {isIncident && <span className="text-xs bg-red-100 text-red-700 px-2 py-1 rounded-full font-medium border border-red-200">BLOQUEIO TOTAL</span>}
+                    </h3>
+                    <p className="text-sm text-slate-500">1 API compartilhada por todos os órgãos</p>
+                </div>
+
+                <div className="flex-1 p-6 flex flex-col items-center justify-between min-h-[500px]">
+
+                    {/* Level 1: Governance Entity */}
+                    <div className="w-full flex justify-center mb-2">
+                    <div className="bg-[#1e3a5f] text-white px-6 py-3 rounded-lg shadow-md flex items-center gap-3 w-48 justify-center z-10">
+                        <IconBuilding className="w-5 h-5" />
+                        <span className="font-semibold">SSP/SC</span>
+                    </div>
+                    </div>
+
+                    {/* Connector 1 */}
+                    <div className="h-12 w-full flex justify-center items-center">
+                    <div className={`h-full w-0.5 ${isApiBlocked ? 'bg-red-400 border-l border-r border-red-200' : 'bg-slate-300'}`}></div>
+                    </div>
+
+                    {/* Level 2: The Single API Bottleneck */}
+                    <div className="w-full flex justify-center relative mb-2">
+                    <div className={`
+                        relative w-64 p-4 rounded-xl border-2 shadow-lg transition-all duration-500
+                        flex flex-col items-center gap-2
+                        ${isApiBlocked
+                        ? 'bg-red-50 border-red-500 shadow-red-100'
+                        : 'bg-white border-blue-200 shadow-blue-50'}
+                    `}>
+                        <div className="flex items-center gap-2">
+                        <IconServer className={`w-6 h-6 ${isApiBlocked ? 'text-red-600' : 'text-slate-600'}`} />
+                        <span className={`font-bold ${isApiBlocked ? 'text-red-700' : 'text-slate-700'}`}>API KEY ÚNICA</span>
+                        </div>
+
+                        {isApiBlocked ? (
+                        <div className="absolute -top-3 -right-3 bg-red-500 text-white p-1 rounded-full shadow-md animate-pulse">
+                            <IconX className="w-6 h-6" />
+                        </div>
+                        ) : (
+                        <div className="absolute -top-3 -right-3 bg-green-500 text-white p-1 rounded-full shadow-md">
+                            <IconCheck className="w-5 h-5" />
+                        </div>
+                        )}
+
+                        <div className="text-xs text-center text-slate-500 mt-1">
+                        Todos os tráfegos passam por aqui
+                        </div>
+                    </div>
+                    </div>
+
+                    {/* Connector 2: Fan Out */}
+                    <ConnectionLines
+                        count={SECTORS.length}
+                        activeIndices={SECTORS.map(() => !isApiBlocked)}
+                        singleSource={true}
+                    />
+
+                    {/* Level 3: Sectors */}
+                    <div className="w-full grid grid-cols-5 gap-2">
+                    {SECTORS.map((sector) => {
+                        const isOrigin = sector.isViolating;
+                        // In Scenario 1, everyone is blocked if incident occurs
+                        const isDown = isIncident;
+
+                        return (
+                        <div key={sector.id} className={`
+                            flex flex-col items-center p-2 rounded-lg border transition-all duration-300
+                            ${isOrigin && isIncident ? 'bg-red-100 border-red-400 ring-2 ring-red-400 ring-offset-1' : ''}
+                            ${!isOrigin && isDown ? 'bg-orange-50 border-orange-200 opacity-70' : ''}
+                            ${!isIncident ? 'bg-slate-50 border-slate-200 hover:border-blue-300' : ''}
+                        `}>
+                            <div className={`mb-2 p-2 rounded-full ${isDown ? 'bg-slate-200 text-slate-500' : 'bg-blue-100 text-blue-700'}`}>
+                            <IconUsers className="w-4 h-4" />
+                            </div>
+                            <span className="text-[10px] uppercase font-bold text-center leading-tight mb-1 text-slate-700">
+                            {sector.name}
+                            </span>
+
+                            {isIncident && (
+                            <div className="mt-1">
+                                {isOrigin ? (
+                                    <span className="text-[9px] font-bold text-red-600 bg-red-100 px-1 py-0.5 rounded border border-red-200">MAU USO</span>
+                                ) : (
+                                    <span className="text-[9px] font-bold text-orange-600 bg-orange-100 px-1 py-0.5 rounded border border-orange-200">BLOQUEADO</span>
+                                )}
+                            </div>
+                            )}
+                            {!isIncident && (
+                                <div className="mt-1">
+                                    <span className="text-[9px] font-bold text-green-600 bg-green-100 px-1 py-0.5 rounded border border-green-200">ONLINE</span>
+                                </div>
+                            )}
+                        </div>
+                        );
+                    })}
+                    </div>
+                </div>
+                </div>
+            );
+        };
+
+        const ProposedScenario = ({ state }) => {
+            const isIncident = state === 'incident';
+
+            return (
+                <div className="flex-1 bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
+                {/* Header */}
+                <div className={`p-4 border-b ${isIncident ? 'bg-green-50 border-green-100' : 'bg-slate-50 border-slate-200'}`}>
+                    <h3 className="font-bold text-lg text-slate-800 flex items-center gap-2">
+                    Cenário 2: Proposto
+                    {isIncident && <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full font-medium border border-green-200">CONTENÇÃO EFETIVA</span>}
+                    </h3>
+                    <p className="text-sm text-slate-500">N APIs isoladas por setor/sistema</p>
+                </div>
+
+                <div className="flex-1 p-6 flex flex-col items-center justify-between min-h-[500px]">
+
+                    {/* Level 1: Governance Entity */}
+                    <div className="w-full flex justify-center mb-2">
+                    <div className="bg-[#1e3a5f] text-white px-6 py-3 rounded-lg shadow-md flex items-center gap-3 w-48 justify-center z-10">
+                        <IconBuilding className="w-5 h-5" />
+                        <span className="font-semibold">SSP/SC</span>
+                    </div>
+                    </div>
+
+                    {/* Connector 1: Fan Out Early */}
+                    <ConnectionLines
+                        count={SECTORS.length}
+                        activeIndices={SECTORS.map((s) => !(isIncident && s.isViolating))}
+                        singleSource={true}
+                    />
+
+                    {/* Level 2: Multiple APIs */}
+                    <div className="w-full grid grid-cols-5 gap-2 mb-2">
+                        {SECTORS.map((sector, idx) => {
+                            const isBlocked = isIncident && sector.isViolating;
+                            return (
+                                <div key={`api-${idx}`} className={`
+                                    relative flex flex-col items-center justify-center p-3 rounded-lg border-2 shadow-sm transition-all duration-500
+                                    ${isBlocked ? 'bg-red-50 border-red-500' : 'bg-white border-blue-200'}
+                                `}>
+                                    <IconServer className={`w-4 h-4 mb-1 ${isBlocked ? 'text-red-500' : 'text-blue-500'}`} />
+                                    <span className="text-[9px] font-mono text-slate-400">KEY-{idx + 1}</span>
+
+                                    {isBlocked ? (
+                                        <div className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-0.5 shadow-sm z-20">
+                                            <IconX className="w-3 h-3" />
+                                        </div>
+                                    ) : (
+                                        <div className="absolute -top-2 -right-2 bg-green-500 text-white rounded-full p-0.5 shadow-sm z-20">
+                                            <IconCheck className="w-3 h-3" />
+                                        </div>
+                                    )}
+                                </div>
+                            )
+                        })}
+                    </div>
+
+                    {/* Connector 2: Direct 1-to-1 */}
+                    <ConnectionLines
+                        count={SECTORS.length}
+                        activeIndices={SECTORS.map((s) => !(isIncident && s.isViolating))}
+                        singleSource={false}
+                    />
+
+                    {/* Level 3: Sectors */}
+                    <div className="w-full grid grid-cols-5 gap-2">
+                    {SECTORS.map((sector) => {
+                        const isOrigin = sector.isViolating;
+                        const isBlocked = isIncident && isOrigin;
+
+                        return (
+                        <div key={sector.id} className={`
+                            flex flex-col items-center p-2 rounded-lg border transition-all duration-300
+                            ${isBlocked ? 'bg-red-100 border-red-400 ring-2 ring-red-400 ring-offset-1 opacity-100' : 'bg-green-50 border-green-200'}
+                        `}>
+                            <div className={`mb-2 p-2 rounded-full ${isBlocked ? 'bg-red-200 text-red-600' : 'bg-green-100 text-green-700'}`}>
+                            <IconUsers className="w-4 h-4" />
+                            </div>
+                            <span className="text-[10px] uppercase font-bold text-center leading-tight mb-1 text-slate-700">
+                            {sector.name}
+                            </span>
+
+                            {isIncident && isOrigin && (
+                            <div className="mt-1">
+                                <span className="text-[9px] font-bold text-red-600 bg-red-100 px-1 py-0.5 rounded border border-red-200">SUSPENSO</span>
+                            </div>
+                            )}
+                            {(!isIncident || !isOrigin) && (
+                            <div className="mt-1">
+                                <span className="text-[9px] font-bold text-green-600 bg-green-100 px-1 py-0.5 rounded border border-green-200">OPERANTE</span>
+                            </div>
+                            )}
+                        </div>
+                        );
+                    })}
+                    </div>
+                </div>
+                </div>
+            );
+        };
+
+        const InfoBox = () => {
+            return (
+                <div className="bg-[#fbbf24] bg-opacity-20 border border-[#fbbf24] border-opacity-50 rounded-lg p-4 flex items-start gap-4 shadow-sm">
+                <div className="bg-[#fbbf24] p-2 rounded-full text-amber-900 bg-opacity-30 mt-1">
+                    <IconActivity className="w-6 h-6" />
+                </div>
+                <div>
+                    <h4 className="font-bold text-amber-900 text-lg">Impacto para o MJSP</h4>
+                    <p className="text-amber-800">
+                    <strong>Volume total inalterado.</strong> O número total de requisições permanece o mesmo, apenas redistribuído entre diferentes chaves de API. Não há sobrecarga técnica, apenas ganho de granularidade na gestão e segurança.
+                    </p>
+                </div>
+                </div>
+            );
+        };
+
+        const SummaryItem = ({ label }) => (
+            <div className="flex items-center gap-2 mb-2">
+                <IconCheck className="w-4 h-4 text-green-600" />
+                <span className="text-slate-700 text-sm font-medium">{label}</span>
+            </div>
+        );
+
+        const Summary = () => {
+            return (
+                <div className="bg-white rounded-lg p-6 shadow-sm border border-slate-200 h-full">
+                <h3 className="text-[#1e3a5f] font-bold text-lg mb-4 uppercase tracking-wider border-b border-slate-100 pb-2">Resumo Executivo</h3>
+
+                <div className="space-y-4">
+                    <div>
+                    <span className="text-xs font-bold text-slate-400 uppercase">Jurídico</span>
+                    <p className="text-slate-800 font-semibold">1 ACT Guarda-Chuva</p>
+                    <p className="text-xs text-slate-500">Estrutura contratual com MJSP mantida.</p>
+                    </div>
+
+                    <div>
+                    <span className="text-xs font-bold text-slate-400 uppercase">Técnico</span>
+                    <p className="text-slate-800 font-semibold">N APIs por Setor/Sistema</p>
+                    <p className="text-xs text-slate-500">Segregação de tráfego e responsabilidade.</p>
+                    </div>
+
+                    <div>
+                    <span className="text-xs font-bold text-slate-400 uppercase">Operacional</span>
+                    <p className="text-slate-800 font-semibold">Resiliência Operacional</p>
+                    <p className="text-xs text-slate-500">Falha localizada não para o estado.</p>
+                    </div>
+
+                    <div className="pt-4 border-t border-slate-100">
+                    <SummaryItem label="Soma zero de volume" />
+                    <SummaryItem label="Auditoria facilitada" />
+                    <SummaryItem label="Sem desvantagens identificadas" />
+                    </div>
+                </div>
+                </div>
+            );
+        };
+
+        /**
+         * ------------------------------------------------------------------
+         * MAIN APP
+         * ------------------------------------------------------------------
+         */
+        function App() {
+            const [scenarioState, setScenarioState] = React.useState('normal');
+
+            const toggleIncident = () => {
+                setScenarioState(prev => prev === 'normal' ? 'incident' : 'normal');
+            };
+
+            return (
+                <div className="min-h-screen bg-slate-100 flex flex-col font-sans text-slate-800">
+
+                {/* Top Banner: ACT Context */}
+                <header className="bg-[#1e3a5f] text-white py-6 shadow-lg">
+                    <div className="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-4">
+                    <div className="flex items-center gap-4">
+                        <div className="bg-white/10 p-3 rounded-lg">
+                        <IconShield className="w-8 h-8 text-white" />
+                        </div>
+                        <div>
+                        <h1 className="text-2xl font-bold tracking-tight">ACT Guarda-Chuva</h1>
+                        <p className="text-blue-200 text-sm">SSP/SC ↔ MJSP (Plataforma Córtex)</p>
+                        </div>
+                    </div>
+                    <div className="flex items-center gap-4">
+                        <div className="text-right hidden md:block">
+                        <p className="text-xs font-mono text-blue-300">ESTADO DA SIMULAÇÃO</p>
+                        <p className={`font-bold ${scenarioState === 'normal' ? 'text-green-400' : 'text-red-400'}`}>
+                            {scenarioState === 'normal' ? 'OPERAÇÃO NORMAL' : 'DETECÇÃO DE MAU USO'}
+                        </p>
+                        </div>
+                        <button
+                            onClick={toggleIncident}
+                            className={`
+                            flex items-center gap-2 px-6 py-3 rounded-lg font-bold shadow-lg transition-all transform hover:scale-105
+                            ${scenarioState === 'normal'
+                                ? 'bg-red-500 hover:bg-red-600 text-white'
+                                : 'bg-green-500 hover:bg-green-600 text-white'}
+                            `}
+                        >
+                            {scenarioState === 'normal' ? (
+                            <>
+                                <IconAlert className="w-5 h-5" /> Simular Infração
+                            </>
+                            ) : (
+                            <>
+                                <IconShield className="w-5 h-5" /> Restaurar Sistema
+                            </>
+                            )}
+                        </button>
+                    </div>
+                    </div>
+                </header>
+
+                {/* Main Content */}
+                <main className="flex-1 container mx-auto px-4 py-8">
+
+                    <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+
+                    {/* Diagrams Area (Takes 3 columns) */}
+                    <div className="lg:col-span-3 space-y-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <CurrentScenario state={scenarioState} />
+                        <ProposedScenario state={scenarioState} />
+                        </div>
+
+                        <InfoBox />
+                    </div>
+
+                    {/* Sidebar Summary (Takes 1 column) */}
+                    <div className="lg:col-span-1">
+                        <Summary />
+                    </div>
+
+                    </div>
+
+                </main>
+
+                {/* Institutional Footer */}
+                <footer className="bg-white border-t border-slate-200 mt-8 py-6">
+                    <div className="container mx-auto px-4 text-center">
+                    <p className="text-xs font-bold text-slate-400 mb-2 uppercase tracking-widest">Contexto Institucional</p>
+                    <div className="flex justify-center gap-4 text-sm font-semibold text-slate-600">
+                        <span>CSIOPI</span>
+                        <span className="text-slate-300">•</span>
+                        <span>CGINT</span>
+                        <span className="text-slate-300">•</span>
+                        <span>DIOPI</span>
+                        <span className="text-slate-300">•</span>
+                        <span>SENASP</span>
+                    </div>
+                    <p className="text-xs text-slate-400 mt-2">Ministério da Justiça e Segurança Pública - Brasil</p>
+                    </div>
+                </footer>
+                </div>
+            );
+        }
+
+        const rootElement = document.getElementById('root');
+        const root = ReactDOM.createRoot(rootElement);
+        root.render(
+            <React.StrictMode>
+                <App />
+            </React.StrictMode>
+        );
+    </script>
+</body>
+</html>

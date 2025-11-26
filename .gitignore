@@ -1,0 +1,26 @@
+# IDEs e Editores
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# NetBeans
+nbproject/
+build/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
+
+# Arquivos do sistema
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+
+# Arquivos temporários
+*.tmp
+*.temp
