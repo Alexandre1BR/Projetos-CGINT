@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>MJSP - Governança de API</title>
+    <title>CGINT - Governança de APIs em Secretarias de Segurança Pública</title>
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -21,7 +21,7 @@
     <style>
       body {
         font-family: 'Inter', sans-serif;
-        background-color: #f8fafc;
+        background-color: #f5f5f5;
       }
       .animate-flow {
         animation: flow 1.5s infinite linear;
@@ -29,6 +29,61 @@
       @keyframes flow {
         0% { stroke-dashoffset: 20; }
         100% { stroke-dashoffset: 0; }
+      }
+      /* Gov Bar */
+      .gov-bar {
+        background: #071d41;
+        color: white;
+        padding: 0.5rem 0;
+        font-size: 0.75rem;
+        border-bottom: 3px solid #00820c;
+      }
+      .gov-bar-content {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 1rem;
+      }
+      /* Header Institucional */
+      .header-institucional {
+        background: white;
+        border-bottom: 1px solid #ddd;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      }
+      .header-content {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+      }
+      .logo-container-gov {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+      .logo-container-gov img {
+        height: 50px;
+        width: auto;
+        object-fit: contain;
+      }
+      .divider-gov {
+        width: 1px;
+        height: 45px;
+        background: #ddd;
+      }
+      .header-title-gov {
+        flex: 1;
+      }
+      .header-title-gov h1 {
+        color: #071d41;
+        font-size: 1.3rem;
+        font-weight: 700;
+        margin-bottom: 0.2rem;
+      }
+      .header-subtitle-gov {
+        color: #666;
+        font-size: 0.8rem;
       }
     </style>
 <script type="importmap">
@@ -52,11 +107,11 @@
          * ------------------------------------------------------------------
          */
         const SECTORS = [
-            { id: 'pc-ops', name: 'PC - Operações', type: 'PC', isViolating: false },
-            { id: 'pc-int', name: 'PC - Inteligência', type: 'PC', isViolating: true }, // The culprit
-            { id: 'pm-copom', name: 'PM - COPOM', type: 'PM', isViolating: false },
-            { id: 'pm-int', name: 'PM - Inteligência', type: 'PM', isViolating: false },
-            { id: 'igp', name: 'IGP - Perícia', type: 'IGP', isViolating: false },
+            { id: 'pc-ops', name: 'Polícia Civil - Operações', type: 'PC', isViolating: false },
+            { id: 'pc-int', name: 'Polícia Civil - Setor de Inteligência', type: 'PC', isViolating: true }, // The culprit
+            { id: 'pm-copom', name: 'Polícia Militar - COPOM', type: 'PM', isViolating: false },
+            { id: 'pm-int', name: 'Polícia Militar - Inteligência', type: 'PM', isViolating: false },
+            { id: 'pc-cientifica', name: 'Polícia Científica', type: 'PC', isViolating: false },
         ];
 
         /**
@@ -185,7 +240,7 @@
                     Cenário 1: Atual
                     {isIncident && <span className="text-xs bg-red-100 text-red-700 px-2 py-1 rounded-full font-medium border border-red-200">BLOQUEIO TOTAL</span>}
                     </h3>
-                    <p className="text-sm text-slate-500">1 API compartilhada por todos os órgãos</p>
+                    <p className="text-sm text-slate-500">Chave de API única compartilhada por todos os órgãos</p>
                 </div>
 
                 <div className="flex-1 p-6 flex flex-col items-center justify-between min-h-[500px]">
@@ -194,7 +249,7 @@
                     <div className="w-full flex justify-center mb-2">
                     <div className="bg-[#1e3a5f] text-white px-6 py-3 rounded-lg shadow-md flex items-center gap-3 w-48 justify-center z-10">
                         <IconBuilding className="w-5 h-5" />
-                        <span className="font-semibold">SSP/SC</span>
+                        <span className="font-semibold">SSP</span>
                     </div>
                     </div>
 
@@ -295,7 +350,7 @@
                     Cenário 2: Proposto
                     {isIncident && <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full font-medium border border-green-200">CONTENÇÃO EFETIVA</span>}
                     </h3>
-                    <p className="text-sm text-slate-500">N APIs isoladas por setor/sistema</p>
+                    <p className="text-sm text-slate-500">Chaves de API individualizadas por órgão/setor</p>
                 </div>
 
                 <div className="flex-1 p-6 flex flex-col items-center justify-between min-h-[500px]">
@@ -304,7 +359,7 @@
                     <div className="w-full flex justify-center mb-2">
                     <div className="bg-[#1e3a5f] text-white px-6 py-3 rounded-lg shadow-md flex items-center gap-3 w-48 justify-center z-10">
                         <IconBuilding className="w-5 h-5" />
-                        <span className="font-semibold">SSP/SC</span>
+                        <span className="font-semibold">SSP</span>
                     </div>
                     </div>
 
@@ -392,9 +447,11 @@
                     <IconActivity className="w-6 h-6" />
                 </div>
                 <div>
-                    <h4 className="font-bold text-amber-900 text-lg">Impacto para o MJSP</h4>
+                    <h4 className="font-bold text-amber-900 text-lg">Impacto Operacional</h4>
                     <p className="text-amber-800">
-                    <strong>Volume total inalterado.</strong> O número total de requisições permanece o mesmo, apenas redistribuído entre diferentes chaves de API. Não há sobrecarga técnica, apenas ganho de granularidade na gestão e segurança.
+                    <strong>Volume total de requisições inalterado.</strong> A mudança arquitetural não aumenta o tráfego total:
+                    o mesmo número de requisições é apenas redistribuído entre diferentes chaves de API. Ganho focado em
+                    granularidade de controle, rastreabilidade e resiliência operacional, sem sobrecarga técnica adicional.
                     </p>
                 </div>
                 </div>
@@ -415,27 +472,27 @@
 
                 <div className="space-y-4">
                     <div>
-                    <span className="text-xs font-bold text-slate-400 uppercase">Jurídico</span>
-                    <p className="text-slate-800 font-semibold">1 ACT Guarda-Chuva</p>
-                    <p className="text-xs text-slate-500">Estrutura contratual com MJSP mantida.</p>
+                    <span className="text-xs font-bold text-slate-400 uppercase">Modelo Jurídico</span>
+                    <p className="text-slate-800 font-semibold">Acordo de Cooperação Único</p>
+                    <p className="text-xs text-slate-500">Estrutura contratual mantida, com subdivisão técnica interna.</p>
                     </div>
 
                     <div>
-                    <span className="text-xs font-bold text-slate-400 uppercase">Técnico</span>
-                    <p className="text-slate-800 font-semibold">N APIs por Setor/Sistema</p>
-                    <p className="text-xs text-slate-500">Segregação de tráfego e responsabilidade.</p>
+                    <span className="text-xs font-bold text-slate-400 uppercase">Arquitetura Técnica</span>
+                    <p className="text-slate-800 font-semibold">Chaves Individualizadas</p>
+                    <p className="text-xs text-slate-500">Segregação de acesso por órgão/setor com rastreabilidade completa.</p>
                     </div>
 
                     <div>
-                    <span className="text-xs font-bold text-slate-400 uppercase">Operacional</span>
-                    <p className="text-slate-800 font-semibold">Resiliência Operacional</p>
-                    <p className="text-xs text-slate-500">Falha localizada não para o estado.</p>
+                    <span className="text-xs font-bold text-slate-400 uppercase">Ganho Operacional</span>
+                    <p className="text-slate-800 font-semibold">Resiliência e Contenção</p>
+                    <p className="text-xs text-slate-500">Incidentes isolados não afetam toda a estrutura estadual.</p>
                     </div>
 
                     <div className="pt-4 border-t border-slate-100">
-                    <SummaryItem label="Soma zero de volume" />
-                    <SummaryItem label="Auditoria facilitada" />
-                    <SummaryItem label="Sem desvantagens identificadas" />
+                    <SummaryItem label="Volume de requisições inalterado" />
+                    <SummaryItem label="Auditoria e rastreabilidade aprimoradas" />
+                    <SummaryItem label="Continuidade operacional garantida" />
                     </div>
                 </div>
                 </div>
@@ -455,22 +512,33 @@
             };
 
             return (
-                <div className="min-h-screen bg-slate-100 flex flex-col font-sans text-slate-800">
+                <div className="min-h-screen flex flex-col font-sans text-slate-800" style={{background: '#f5f5f5'}}>
 
-                {/* Top Banner: ACT Context */}
-                <header className="bg-[#1e3a5f] text-white py-6 shadow-lg">
-                    <div className="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-4">
-                    <div className="flex items-center gap-4">
-                        <div className="flex items-center gap-3 bg-white/10 px-4 py-2 rounded-lg">
-                            <img src="../assets/images/logo-republica.png" alt="República Federativa do Brasil" className="h-12 w-auto object-contain" />
-                            <div className="w-px h-12 bg-white/30"></div>
-                            <img src="../assets/images/logo-cgint.png" alt="CGINT" className="h-12 w-auto object-contain" />
+                {/* Barra Superior Governamental */}
+                <div className="gov-bar">
+                    <div className="gov-bar-content">
+                        Ministério da Justiça e Segurança Pública - SENASP/DIOPI/CGINT
+                    </div>
+                </div>
+
+                {/* Header Institucional */}
+                <div className="header-institucional">
+                    <div className="header-content">
+                        <div className="logo-container-gov">
+                            <img src="../assets/images/logo-republica.png" alt="República Federativa do Brasil" />
+                            <div className="divider-gov"></div>
+                            <img src="../assets/images/logo-cgint.png" alt="CGINT" />
                         </div>
-                        <div>
-                        <h1 className="text-2xl font-bold tracking-tight">ACT Guarda-Chuva</h1>
-                        <p className="text-blue-200 text-sm">SSP/SC ↔ MJSP (Plataforma Córtex)</p>
+                        <div className="header-title-gov">
+                            <h1>Diagrama de Governança de APIs</h1>
+                            <p className="header-subtitle-gov">Modelo de Gestão de Acesso para Secretarias de Segurança Pública</p>
                         </div>
                     </div>
+                </div>
+
+                {/* Banner de Controle */}
+                <header className="bg-[#1e3a5f] text-white py-4 shadow-md">
+                    <div className="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-4">
                     <div className="flex items-center gap-4">
                         <div className="text-right hidden md:block">
                         <p className="text-xs font-mono text-blue-300">ESTADO DA SIMULAÇÃO</p>
@@ -526,19 +594,20 @@
                 </main>
 
                 {/* Institutional Footer */}
-                <footer className="bg-white border-t border-slate-200 mt-8 py-6">
+                <footer className="border-t-3 border-t-4 mt-8 py-6" style={{background: '#071d41', borderTopColor: '#00820c'}}>
                     <div className="container mx-auto px-4 text-center">
-                    <p className="text-xs font-bold text-slate-400 mb-2 uppercase tracking-widest">Contexto Institucional</p>
-                    <div className="flex justify-center gap-4 text-sm font-semibold text-slate-600">
-                        <span>CSIOPI</span>
-                        <span className="text-slate-300">•</span>
+                    <p className="text-xs font-bold mb-2 uppercase tracking-widest" style={{color: 'rgba(255,255,255,0.6)'}}>Sistema Desenvolvido por</p>
+                    <div className="flex justify-center gap-4 text-sm font-semibold" style={{color: 'rgba(255,255,255,0.9)'}}>
                         <span>CGINT</span>
-                        <span className="text-slate-300">•</span>
+                        <span style={{color: 'rgba(255,255,255,0.4)'}}>•</span>
                         <span>DIOPI</span>
-                        <span className="text-slate-300">•</span>
+                        <span style={{color: 'rgba(255,255,255,0.4)'}}>•</span>
                         <span>SENASP</span>
+                        <span style={{color: 'rgba(255,255,255,0.4)'}}>•</span>
+                        <span>MJSP</span>
                     </div>
-                    <p className="text-xs text-slate-400 mt-2">Ministério da Justiça e Segurança Pública - Brasil</p>
+                    <p className="text-xs mt-3" style={{color: 'rgba(255,255,255,0.6)'}}>Ferramenta de análise para fins técnicos e educacionais</p>
+                    <p className="text-xs mt-1" style={{color: 'rgba(255,255,255,0.5)'}}>Ministério da Justiça e Segurança Pública</p>
                     </div>
                 </footer>
                 </div>

@@ -181,7 +181,8 @@
 
         .projects-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            grid-template-columns: 1fr;
+            max-width: 900px;
             gap: 1.5rem;
             margin-bottom: 2rem;
         }
@@ -477,33 +478,7 @@
         <h2 class="projects-title">Sistemas Disponíveis</h2>
 
         <div class="projects-grid">
-            <!-- Sistema 1: Calculadora -->
-            <div class="project-card">
-                <div class="project-header">
-                    <div class="project-icon">📊</div>
-                    <div class="project-header-text">
-                        <h3>Calculadora de Renda Fixa</h3>
-                        <span class="system-id">SYS-FIN-001</span>
-                    </div>
-                </div>
-                <div class="project-body">
-                    <p class="project-description">
-                        Sistema de análise comparativa para investimentos em renda fixa, incluindo CDB, LCI/LCA,
-                        Tesouro SELIC e IPCA+. Permite simulação de cenários de curto, médio e longo prazo com
-                        cálculo automático de reinvestimento, come-cotas e cupons semestrais.
-                    </p>
-                    <div class="project-tags">
-                        <span class="tag">Análise Financeira</span>
-                        <span class="tag">Investimentos</span>
-                        <span class="tag priority">Calculadora</span>
-                    </div>
-                    <a href="projetos/calculadora-renda-fixa.html" class="project-link">
-                        Acessar Sistema
-                    </a>
-                </div>
-            </div>
-
-            <!-- Sistema 2: Diagrama -->
+            <!-- Sistema: Diagrama de Governança -->
             <div class="project-card">
                 <div class="project-header">
                     <div class="project-icon">🔐</div>
@@ -514,15 +489,16 @@
                 </div>
                 <div class="project-body">
                     <p class="project-description">
-                        Visualização interativa de cenários de governança de APIs no contexto do Acordo de Cooperação
-                        Técnica (ACT) SSP/SC ↔ MJSP. Demonstra impactos operacionais de diferentes arquiteturas de
-                        segurança e controle de acesso à Plataforma Córtex.
+                        Ferramenta de visualização interativa que demonstra modelos de governança de APIs em Secretarias
+                        de Segurança Pública. Compara cenários de gestão centralizada versus descentralizada de chaves de
+                        acesso, evidenciando impactos operacionais em situações de segurança da informação e controle de
+                        acesso a sistemas integrados do MJSP.
                     </p>
                     <div class="project-tags">
                         <span class="tag">Governança</span>
-                        <span class="tag">Segurança</span>
-                        <span class="tag">APIs</span>
-                        <span class="tag priority">Interativo</span>
+                        <span class="tag">Gestão de APIs</span>
+                        <span class="tag">Segurança da Informação</span>
+                        <span class="tag priority">Simulação Interativa</span>
                     </div>
                     <a href="projetos/governanca-apis.html" class="project-link">
                         Acessar Sistema
@@ -554,6 +530,7 @@
                     <a href="https://www.gov.br/mj/pt-br">Portal MJSP</a>
                     <a href="https://www.gov.br/mj/pt-br/assuntos/sua-seguranca/seguranca-publica/senasp">SENASP</a>
                     <a href="https://www.gov.br">Portal Gov.br</a>
+                    <a href="projetos/calculadora-renda-fixa.html">Calculadora de Renda Fixa</a>
                 </div>
             </div>
 
